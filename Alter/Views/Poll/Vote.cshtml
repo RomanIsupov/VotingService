@@ -1,0 +1,16 @@
+﻿@model VoteViewModel
+
+<br />
+<p>If you are sure you want to vote for this then press the button below.</p>
+
+<form asp-action="Vote">
+    <div class="form-group">
+        <input type="hidden" asp-for="PollId" class="form-control" value="@Model.PollId"/>
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="AnswerId" class="form-control" value="@Model.AnswerId"/>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Vote" class="btn btn-default" />
+    </div>
+</form>

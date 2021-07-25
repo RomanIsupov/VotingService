@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Alter.Models.Poll>
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Index";
+    var verticalLine = "|";
+}
+
+<h2>Index</h2>
+@if (User.IsInRole(ApplicationRoles.Administrators))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Question)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Finished)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (SignInManager.IsSignedIn(User) || item.Finished)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Question)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Finished)
+                    </td>
+                    <td>
+                        @if (User.IsInRole(ApplicationRoles.Administrators))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit Poll</a> @verticalLine
+                        }
+                        <a asp-action="Details" asp-route-id="@item.Id">Poll Details</a>
+                        @if (User.IsInRole(ApplicationRoles.Administrators))
+                        {
+                            @verticalLine <a asp-action="Delete" asp-route-id="@item.Id">Delete Poll</a>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

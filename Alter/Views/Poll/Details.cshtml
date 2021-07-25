@@ -1,0 +1,84 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model Alter.Models.Poll
+
+@{
+    ViewData["Title"] = "Details";
+    Boolean canVote = !Model.Users.Any(u => u.Id == UserManager.GetUserId(User));
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Poll</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Question)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Question)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Finished)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Finished)
+        </dd>
+    </dl>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Text
+            </th>
+            <th>
+                Amount
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Answers)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                @if (User.IsInRole(ApplicationRoles.Administrators))
+                {
+                    <td>
+                        <a asp-controller="Answer" asp-action="Edit" asp-route-id="@item.Id">Edit Answer</a>
+                    </td>
+                }
+                @if (SignInManager.IsSignedIn(User) && canVote && !Model.Finished)
+                {
+                    <td>
+                        <a class="bg-primary" asp-controller="Poll" asp-action="Vote" asp-route-AnswerId="@item.Id">Vote</a>
+                    </td>
+                }
+            </tr>
+        }
+        <div>
+            <a asp-action="Index">Back to Polls</a>
+        </div>
+    </tbody>
+</table>
+
+<div>
+    @if (User.IsInRole(ApplicationRoles.Administrators))
+    {
+        <a asp-action="Create" asp-controller="Answer">Create Answer</a>
+    }
+</div>
